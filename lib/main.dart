@@ -1,7 +1,9 @@
-import 'dart:math';
-
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'dart:math';
+import 'package:weather_app/components/future_forecast_cards.dart';
 import 'package:weather_app/components/search_weather_screen.dart';
+import 'package:weather_app/components/tempurature_component.dart';
 import 'package:weather_app/models/current_weather.dart';
 import 'package:weather_app/util/images_detector.dart';
 import 'package:weather_app/util/weather_http.dart';
@@ -35,24 +37,29 @@ class _MyAppState extends State<MyApp> {
 
     setState(() {
       cityName = result;
-      cityName.isEmpty ? futureWeather = WeatherHttp.getCurrentJSONWeather("Москва") :
-      futureWeather = WeatherHttp.getCurrentJSONWeather(cityName);
+      cityName.isEmpty
+          ? futureWeather = WeatherHttp.getCurrentJSONWeather("Москва")
+          : futureWeather = WeatherHttp.getCurrentJSONWeather(cityName);
     });
   }
+
+  final color_1 = Color(0x30A2C5);
+  final color_2 = Color(0xFFFFFF);
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Weather App',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        primaryColor: Colors.blue,
-      ),
       home: Scaffold(
-        appBar: AppBar(
-          title: const Text('Weather App'),
-        ),
-        body: SafeArea(
+        body: Container(
+          padding: EdgeInsets.only(top: 40),
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [Colors.green, Colors.white]),
+          ),
           child: Center(
             child: FutureBuilder<CurrentWeather>(
                 future: futureWeather,
@@ -61,56 +68,91 @@ class _MyAppState extends State<MyApp> {
                     return Center(
                       child: Column(
                         children: [
+                          Align(
+                            alignment: Alignment(0.9, 0.5),
+                            child: IconButton(
+                              icon: Icon(
+                                Icons.search,
+                                color: Colors.black,
+                                size: 40,
+                              ),
+                              onPressed: () {
+                                _returnDataFromSearchScreen(context);
+                              },
+                              color: Colors.blue,
+                            ),
+                          ),
                           Container(
-                            padding: EdgeInsets.all(5.0),
-                            margin: EdgeInsets.all(20.0),
                             child: Text(
                               snapshot.data!.name,
                               style: TextStyle(
-                                  fontWeight: FontWeight.w500, fontSize: 50.0),
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 50.0,
+                                  fontFamily: 'Montserrat',
+                                  color: Colors.white),
                             ),
                           ),
                           Text(
-                            (snapshot.data!.mainJson.temp).toString(),
+                            (snapshot.data!.weather[0].description),
                             style: TextStyle(
-                                fontSize: 30.0, fontWeight: FontWeight.bold),
+                                fontSize: 20.0,
+                                fontWeight: FontWeight.bold,
+                                fontFamily: 'Montserrat',
+                                color: Colors.white),
                           ),
-                          Text(
-                            snapshot.data!.weather
-                                .map((e) => e.description)
-                                .first,
-                            style: TextStyle(
-                                fontSize: 20.0, fontWeight: FontWeight.w400),
+                          Padding(
+                            padding:
+                                const EdgeInsets.only(top: 20.0, bottom: 100.0),
+                            child: TempuratureWidget(
+                                'assets/' +
+                                    ImagesDetector.findImageByIconName(snapshot
+                                        .data!.weather
+                                        .map((e) => e.icon)
+                                        .first),
+                                (snapshot.data!.mainJson.temp).toStringAsFixed(0) + '℃'),
                           ),
-                          // if (snapshot.data!.weather.map((e) => e.icon).first ==
-                          //     ImagesDetector.findImageByIconName(snapshot.data!.weather
-                          //         .map((e) => e.icon)
-                          //         .first))
-                            Padding(
-                              padding: const EdgeInsets.all(50.0),
-                              child: Image(
-                                image: AssetImage('assets/' + ImagesDetector.findImageByIconName(
-                                  snapshot.data!.weather.map((e) => e.icon).first)),
-                                height: 200,
-                                width: 200,
+                          Stack(children: <Widget>[
+                            Container(
+                              height: 200,
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(60.0),
+                              ),
+                              child: ListView(
+                                scrollDirection: Axis.horizontal,
+                                children: <Widget>[
+                                  FutureForecastCards.getForecastCard('Sunday',
+                                      'assets/' +
+                                          ImagesDetector.findImageByIconName(snapshot
+                                              .data!.weather
+                                              .map((e) => e.icon)
+                                              .first), (snapshot.data!.mainJson.temp).toString()),
+                                  FutureForecastCards.getForecastCard('Sunday',
+                                      'assets/' +
+                                          ImagesDetector.findImageByIconName(snapshot
+                                              .data!.weather
+                                              .map((e) => e.icon)
+                                              .first), (snapshot.data!.mainJson.temp).toString()),
+                                  FutureForecastCards.getForecastCard('Sunday',
+                                      'assets/' +
+                                          ImagesDetector.findImageByIconName(snapshot
+                                              .data!.weather
+                                              .map((e) => e.icon)
+                                              .first), (snapshot.data!.mainJson.temp).toString()),
+                                  FutureForecastCards.getForecastCard('Sunday',
+                                      'assets/' +
+                                          ImagesDetector.findImageByIconName(snapshot
+                                              .data!.weather
+                                              .map((e) => e.icon)
+                                              .first), (snapshot.data!.mainJson.temp).toString()),
+                                ],
                               ),
                             ),
-                          SizedBox(
-                            height: 100.0,
-                            width: 100.0,
-                          ),
-                          RaisedButton(
-                            onPressed: () {
-                              _returnDataFromSearchScreen(context);
-                            },
-                            color: Colors.blue,
-                            textColor: Colors.white,
-                            child: Text("Search weather"),
-                            shape: const RoundedRectangleBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(5.0)),
+                            Padding(
+                              padding: const EdgeInsets.all(30.0),
+                              child: Text("Погода на ближайшие 4 дня", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, fontFamily: 'Montserrat', color: Colors.black),),
                             ),
-                          ),
+                          ]),
                         ],
                       ),
                     );
