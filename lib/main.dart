@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'dart:math';
 import 'package:weather_app/components/future_forecast_cards.dart';
 import 'package:weather_app/components/search_weather_screen.dart';
 import 'package:weather_app/components/tempurature_component.dart';
@@ -109,7 +108,7 @@ class _MyAppState extends State<MyApp> {
                                         .data!.weather
                                         .map((e) => e.icon)
                                         .first),
-                                (snapshot.data!.mainJson.temp).toStringAsFixed(0) + '℃'),
+                                (snapshot.data!.mainJson.temp).toStringAsFixed(0)),
                           ),
                           Stack(children: <Widget>[
                             Container(
@@ -150,7 +149,7 @@ class _MyAppState extends State<MyApp> {
                             ),
                             Padding(
                               padding: const EdgeInsets.all(30.0),
-                              child: Text("Погода на ближайшие 4 дня", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, fontFamily: 'Montserrat', color: Colors.black),),
+                              child: Center(child: Text("Погода на ближайшие 4 дня", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, fontFamily: 'Montserrat', color: Colors.black),)),
                             ),
                           ]),
                         ],

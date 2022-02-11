@@ -18,7 +18,7 @@ class TempuratureWidget extends StatelessWidget {
       child: Column(
         children: <Widget>[
           Image(image: AssetImage(imageName), width: 75, height: 75,),
-          Text(text, style: TextStyle(fontSize: 90, fontFamily: 'Montserrat', fontWeight: FontWeight.normal),)
+          Text(text + '°C', style: TextStyle(fontSize: 90, fontFamily: 'Montserrat', fontWeight: FontWeight.normal),)
         ],
       ),
     );

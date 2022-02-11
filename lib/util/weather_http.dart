@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:weather_app/models/current_weather.dart';
+import 'package:weather_app/models/future_weather.dart';
 
 class WeatherHttp {
 
@@ -17,6 +18,22 @@ class WeatherHttp {
     if (response.statusCode == 200) {
       print(response.body);
       return CurrentWeather.fromJSON(jsonDecode(response.body));
+    } else {
+      throw Exception('No data received');
+    }
+  }
+
+  static Future<FutureWeather> getFutureJSONWeather(String city) async {
+    final String currentWeatherURL =
+        'http://api.openweathermap.org/data/2.5/weather?q=$city&units=metric&appid=$api_key&lang=ru';
+
+    final String futureWeatherURL =
+        'api.openweathermap.org/data/2.5/forecast?q=$city&appid=$api_key&lang=ru';
+
+    final response = await http.get(Uri.parse(currentWeatherURL));
+    if (response.statusCode == 200) {
+      print(response.body);
+      return FutureWeather.fromJSON(jsonDecode(response.body));
     } else {
       throw Exception('No data received');
     }
