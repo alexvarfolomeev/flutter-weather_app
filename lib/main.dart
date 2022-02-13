@@ -4,6 +4,7 @@ import 'package:weather_app/components/future_forecast_cards.dart';
 import 'package:weather_app/components/search_weather_screen.dart';
 import 'package:weather_app/components/tempurature_component.dart';
 import 'package:weather_app/models/current_weather.dart';
+import 'package:weather_app/models/future_weather.dart';
 import 'package:weather_app/util/images_detector.dart';
 import 'package:weather_app/util/weather_http.dart';
 
@@ -19,15 +20,17 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  late Future<CurrentWeather> futureWeather;
-  WeatherHttp weatherHttp = WeatherHttp();
+  late Future<CurrentWeather> currentWeather;
+  late Future<FutureWeather> futureWeather;
+  final WeatherHttp weatherHttp = WeatherHttp();
   String cityName = '';
 
   @override
   void initState() {
     super.initState();
     cityName = 'Москва';
-    futureWeather = WeatherHttp.getCurrentJSONWeather(cityName);
+    currentWeather = WeatherHttp.getCurrentJSONWeather(cityName);
+    futureWeather = WeatherHttp.getFutureJSONWeather(cityName);
   }
 
   void _returnDataFromSearchScreen(BuildContext context) async {
@@ -37,13 +40,10 @@ class _MyAppState extends State<MyApp> {
     setState(() {
       cityName = result;
       cityName.isEmpty
-          ? futureWeather = WeatherHttp.getCurrentJSONWeather("Москва")
-          : futureWeather = WeatherHttp.getCurrentJSONWeather(cityName);
+          ? currentWeather = WeatherHttp.getCurrentJSONWeather("Москва")
+          : currentWeather = WeatherHttp.getCurrentJSONWeather(cityName);
     });
   }
-
-  final color_1 = Color(0x30A2C5);
-  final color_2 = Color(0xFFFFFF);
 
   @override
   Widget build(BuildContext context) {
@@ -61,7 +61,7 @@ class _MyAppState extends State<MyApp> {
           ),
           child: Center(
             child: FutureBuilder<CurrentWeather>(
-                future: futureWeather,
+                future: currentWeather,
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
                     return Center(
@@ -110,50 +110,56 @@ class _MyAppState extends State<MyApp> {
                                         .first),
                                 (snapshot.data!.mainJson.temp).toStringAsFixed(0)),
                           ),
-                          Stack(children: <Widget>[
-                            Container(
-                              height: 200,
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(60.0),
-                              ),
-                              child: ListView(
-                                scrollDirection: Axis.horizontal,
-                                children: <Widget>[
-                                  FutureForecastCards.getForecastCard('Sunday',
-                                      'assets/' +
-                                          ImagesDetector.findImageByIconName(snapshot
-                                              .data!.weather
-                                              .map((e) => e.icon)
-                                              .first), (snapshot.data!.mainJson.temp).toString()),
-                                  FutureForecastCards.getForecastCard('Sunday',
-                                      'assets/' +
-                                          ImagesDetector.findImageByIconName(snapshot
-                                              .data!.weather
-                                              .map((e) => e.icon)
-                                              .first), (snapshot.data!.mainJson.temp).toString()),
-                                  FutureForecastCards.getForecastCard('Sunday',
-                                      'assets/' +
-                                          ImagesDetector.findImageByIconName(snapshot
-                                              .data!.weather
-                                              .map((e) => e.icon)
-                                              .first), (snapshot.data!.mainJson.temp).toString()),
-                                  FutureForecastCards.getForecastCard('Sunday',
-                                      'assets/' +
-                                          ImagesDetector.findImageByIconName(snapshot
-                                              .data!.weather
-                                              .map((e) => e.icon)
-                                              .first), (snapshot.data!.mainJson.temp).toString()),
-                                ],
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.all(30.0),
-                              child: Center(child: Text("Погода на ближайшие 4 дня", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, fontFamily: 'Montserrat', color: Colors.black),)),
-                            ),
-                          ]),
-                        ],
-                      ),
+                          FutureBuilder<FutureWeather>(
+                            future: futureWeather,
+                            builder: (context, snapshot_1) {
+                              if(snapshot_1.hasData){
+                              return Stack(children: <Widget>[
+                                Container(
+                                  height: 200,
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(60.0),
+                                  ),
+                                  child: Row(
+                                    children: <Widget>[
+                                      FutureForecastCards.getForecastCard('Sunday',
+                                          'assets/' +
+                                              ImagesDetector.findImageByIconName(snapshot_1
+                                                  .data!.weather_list
+                                                  .map((e) => e.weather[0].icon)
+                                                  .first), (snapshot_1.data!.weather_list[1].mainJson.temp).toString()),
+                                      FutureForecastCards.getForecastCard('Sunday',
+                                          'assets/' +
+                                              ImagesDetector.findImageByIconName(snapshot_1
+                                                  .data!.weather_list
+                                                  .map((e) => e.weather[0].icon)
+                                                  .first), (snapshot_1.data!.weather_list[2].mainJson.temp).toString()),
+                                      FutureForecastCards.getForecastCard('Sunday',
+                                          'assets/' +
+                                              ImagesDetector.findImageByIconName(snapshot_1
+                                                  .data!.weather_list
+                                                  .map((e) => e.weather[0].icon)
+                                                  .first), (snapshot_1.data!.weather_list[3].mainJson.temp).toString()),
+                                      FutureForecastCards.getForecastCard('Sunday',
+                                          'assets/' +
+                                              ImagesDetector.findImageByIconName(snapshot_1
+                                                  .data!.weather_list
+                                                  .map((e) => e.weather[0].icon)
+                                                  .first), (snapshot_1.data!.weather_list[4].mainJson.temp).toString()),
+                                    ],
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.all(30.0),
+                                  child: Center(child: Text("Погода на ближайшие 4 дня", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, fontFamily: 'Montserrat', color: Colors.black),)),
+                                ),
+                              ]);
+                            } else {
+                                 return Text('${snapshot.error}');
+                              }
+                            }),
+                        ],),
                     );
                   } else if (snapshot.hasError) {
                     return Text('${snapshot.error}');

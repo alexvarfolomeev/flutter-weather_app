@@ -24,13 +24,10 @@ class WeatherHttp {
   }
 
   static Future<FutureWeather> getFutureJSONWeather(String city) async {
-    final String currentWeatherURL =
-        'http://api.openweathermap.org/data/2.5/weather?q=$city&units=metric&appid=$api_key&lang=ru';
-
     final String futureWeatherURL =
-        'api.openweathermap.org/data/2.5/forecast?q=$city&appid=$api_key&lang=ru';
+        'http://api.openweathermap.org/data/2.5/forecast?q=$city&appid=$api_key&lang=ru&units=metric';
 
-    final response = await http.get(Uri.parse(currentWeatherURL));
+    final response = await http.get(Uri.parse(futureWeatherURL));
     if (response.statusCode == 200) {
       print(response.body);
       return FutureWeather.fromJSON(jsonDecode(response.body));

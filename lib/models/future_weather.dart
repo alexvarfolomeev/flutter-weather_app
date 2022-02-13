@@ -1,16 +1,17 @@
-
 class FutureWeather {
   String cod;
   int message;
   int cnt;
   List<FiveDaysWeatherList> weather_list;
+  City city;
 
   FutureWeather(
       {
         required this.cod,
         required this.message,
         required this.cnt,
-        required this.weather_list
+        required this.weather_list,
+        required this.city,
       });
 
   factory FutureWeather.fromJSON(Map<String, dynamic> json) {
@@ -22,6 +23,34 @@ class FutureWeather {
       message: json['message'],
       cnt: json['cnt'],
       weather_list: list_of_weather,
+      city: City.fromJSON(json['city'])
+    );
+  }
+}
+
+class City {
+  int id;
+  String name;
+  Coord coord;
+  String country;
+  dynamic population;
+  int timezone;
+  int sunrise;
+  int sunset;
+
+  City({required this.id, required this.name, required this.coord, required this.country, required this.population,
+    required this.timezone, required this.sunrise,  required this.sunset});
+
+  factory City.fromJSON(Map<String, dynamic> json) {
+    return City(
+      id: json['id'],
+      name: json['name'],
+      coord: Coord.fromJSON(json['coord']),
+      country: json['country'],
+      population: json['population'],
+      timezone: json['timezone'],
+      sunrise: json['sunrise'],
+      sunset: json['sunset'],
     );
   }
 }
@@ -33,7 +62,7 @@ class FiveDaysWeatherList {
   Clounds clouds;
   Wind wind;
   int visibility;
-  int pop;
+  dynamic pop;
   Sys sys;
   String dt_txt;
 
@@ -135,7 +164,7 @@ class MainJson {
 }
 
 class Wind {
-  final double? speed;
+  dynamic speed;
   final int? deg;
   final dynamic gust;
 
