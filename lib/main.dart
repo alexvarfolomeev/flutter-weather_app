@@ -42,7 +42,43 @@ class _MyAppState extends State<MyApp> {
       cityName.isEmpty
           ? currentWeather = WeatherHttp.getCurrentJSONWeather("Москва")
           : currentWeather = WeatherHttp.getCurrentJSONWeather(cityName);
+      cityName.isEmpty
+          ? futureWeather = WeatherHttp.getFutureJSONWeather("Москва")
+          : futureWeather = WeatherHttp.getFutureJSONWeather(cityName);
     });
+  }
+
+
+  String _getDayOfTheWeek(String dateFromJSON) {
+    String result = '';
+    List<String> splittedDate = (dateFromJSON.split(' ')).first.split('-');
+    final day = DateTime.utc(int.parse(splittedDate[0]), int.parse(splittedDate[1]), int.parse(splittedDate[2]));
+    switch (day.weekday) {
+      case 1:
+        return "Понедельник";
+        break;
+      case 2:
+        return result = "Вторник";
+        break;
+      case 3:
+        return result = "Среда";
+        break;
+      case 4:
+        return result = "Четверг";
+        break;
+      case 5:
+        return result = "Пятница";
+        break;
+      case 6:
+        return result = "Суббота";
+        break;
+      case 7:
+        return result = "Воскресенье";
+        break;
+      default:
+        " ";
+    }
+    return result;
   }
 
   @override
@@ -123,30 +159,30 @@ class _MyAppState extends State<MyApp> {
                                   ),
                                   child: Row(
                                     children: <Widget>[
-                                      FutureForecastCards.getForecastCard('Sunday',
+                                      FutureForecastCards.getForecastCard(_getDayOfTheWeek(snapshot_1.data!.weather_list[5].dt_txt),
                                           'assets/' +
                                               ImagesDetector.findImageByIconName(snapshot_1
                                                   .data!.weather_list
                                                   .map((e) => e.weather[0].icon)
-                                                  .first), (snapshot_1.data!.weather_list[1].mainJson.temp).toString()),
-                                      FutureForecastCards.getForecastCard('Sunday',
+                                                  .first), (snapshot_1.data!.weather_list[5].mainJson.temp).toStringAsFixed(0) == '0' ? 0 : (snapshot_1.data!.weather_list[1].mainJson.temp).toStringAsFixed(0)),
+                                      FutureForecastCards.getForecastCard(_getDayOfTheWeek(snapshot_1.data!.weather_list[11].dt_txt),
                                           'assets/' +
                                               ImagesDetector.findImageByIconName(snapshot_1
                                                   .data!.weather_list
                                                   .map((e) => e.weather[0].icon)
-                                                  .first), (snapshot_1.data!.weather_list[2].mainJson.temp).toString()),
-                                      FutureForecastCards.getForecastCard('Sunday',
+                                                  .first), (snapshot_1.data!.weather_list[11].mainJson.temp).toStringAsFixed(0)),
+                                      FutureForecastCards.getForecastCard(_getDayOfTheWeek(snapshot_1.data!.weather_list[20].dt_txt),
                                           'assets/' +
                                               ImagesDetector.findImageByIconName(snapshot_1
                                                   .data!.weather_list
                                                   .map((e) => e.weather[0].icon)
-                                                  .first), (snapshot_1.data!.weather_list[3].mainJson.temp).toString()),
-                                      FutureForecastCards.getForecastCard('Sunday',
+                                                  .first), (snapshot_1.data!.weather_list[20].mainJson.temp).toStringAsFixed(0)),
+                                      FutureForecastCards.getForecastCard(_getDayOfTheWeek(snapshot_1.data!.weather_list[30].dt_txt),
                                           'assets/' +
                                               ImagesDetector.findImageByIconName(snapshot_1
                                                   .data!.weather_list
                                                   .map((e) => e.weather[0].icon)
-                                                  .first), (snapshot_1.data!.weather_list[4].mainJson.temp).toString()),
+                                                  .first), (snapshot_1.data!.weather_list[30].mainJson.temp).toStringAsFixed(0)),
                                     ],
                                   ),
                                 ),
